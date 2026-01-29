@@ -63,8 +63,6 @@ struct ContentView: View {
             return
         }
         
-        
-        //extra validation to come
         withAnimation{
             usedWords.insert(answer, at: 0)
         }
