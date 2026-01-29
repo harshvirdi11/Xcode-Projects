@@ -1,0 +1,29 @@
+{
+  "activityEntities" : [
+    "projectCreated",
+    [
+      {
+        "createdDate" : "2026-01-27T04:49:20Z",
+        "event" : "projectCreated",
+        "id" : "8D5FA787-92BF-4B98-8A15-2718378D380E",
+        "subtitle" : "BetterRest",
+        "title" : "Project Created"
+      }
+    ]
+  ],
+  "authorName" : "Harsh Virdi",
+  "createdDate" : "2026-01-27T04:49:20Z",
+  "description" : "",
+  "id" : "54184D06-6A4E-412E-B700-01FF8BC9834E",
+  "license" : "",
+  "location" : "",
+  "modifiedDate" : "2026-01-27T04:49:20Z",
+  "projectName" : "BetterRest",
+  "settingsEntity" : {
+    "snapshotOnExtendTraining" : true,
+    "snapshotOnResumeTraining" : false
+  },
+  "taskType" : "generalRegresor",
+  "title" : "Tabular Regression",
+  "version" : "1.1"
+}
