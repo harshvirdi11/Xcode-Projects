@@ -71,6 +71,7 @@ struct ContentView: View {
                 } message: {
                     Text(errorMessage)
                 }
+                .animation(.spring(), value: usedWords)
             }
     }
     
@@ -104,9 +105,8 @@ struct ContentView: View {
             return
         }
         
-        withAnimation{
-            usedWords.insert(answer, at: 0)
-        }
+       
+        usedWords.insert(answer, at: 0)
         score += answer.count + 10
         newWord = ""
     }
@@ -115,6 +115,7 @@ struct ContentView: View {
         score = 0
         newWord = ""
         usedWords.removeAll()
+        
         if let startWordsUrl = Bundle.main.url(forResource: "start", withExtension: "txt"){
             if let startWords = try? String(contentsOf: startWordsUrl, encoding: .utf8)
             {
