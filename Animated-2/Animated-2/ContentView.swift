@@ -15,7 +15,7 @@ struct ContentView: View {
     @State private var dragAmount: CGSize = .zero
     @State private var enabled: Bool = false
     @State private var snakeColor: Color = .blue
-    let possibleColors: [Color] = [.blue, .red, .green, .yellow, .purple, .pink, .orange, .brown]
+    let possibleColors: [Color] = [.indigo, .mint, .cyan, .teal, .pink, .purple, .orange]
     
     var body: some View {
         ZStack{
@@ -24,9 +24,22 @@ struct ContentView: View {
                 .ignoresSafeArea()
                 .opacity(0.8)
             VStack{
-                Text("Snakey needs to be dragged!")
-                    .font(Font.title.bold())
-                    .frame(width: 400, height: 100)
+                VStack(spacing: 5) {
+                    Text("🐍 Snakey")
+                        .font(.system(size: 40, weight:
+                        .black, design: .rounded))
+                        .foregroundStyle(.primary)
+                                    
+                    Text("Drag the snake to wiggle it!")
+                        .font(.title3.bold())
+                        .foregroundStyle(.secondary)
+                    }
+                .padding(.vertical, 20)
+                .frame(maxWidth: .infinity)
+                .background(.thinMaterial)
+                .clipShape(RoundedRectangle(cornerRadius: 20))
+                .padding(.horizontal, 20)
+                .padding(.top, 60)
                    
                 Spacer()
                 
@@ -39,8 +52,9 @@ struct ContentView: View {
                             .padding([.top, .bottom], 2)
                              */
                             .frame(width: 20, height: 35)
-                            .background(snakeColor)
+                            .background(snakeColor.gradient)
                             .cornerRadius(5)
+                            .shadow(color: .black.opacity(0.5), radius: 3, x: 0, y: 4)
                             .offset(dragAmount)
                             .animation(.linear.delay(Double(num)/20.0), value: dragAmount)
                     }
