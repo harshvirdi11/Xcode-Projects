@@ -8,7 +8,7 @@
 import SwiftUI
 
 @main
-struct Animated_2App: App {
+struct SnakeyApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()

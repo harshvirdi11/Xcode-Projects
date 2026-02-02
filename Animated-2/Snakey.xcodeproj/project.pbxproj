@@ -7,13 +7,13 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		7A5F0EF62F30849900E64ABB /* Animated-2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Animated-2.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		7A5F0EF62F30849900E64ABB /* Snakey.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Snakey.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		7A5F0EF82F30849900E64ABB /* Animated-2 */ = {
+		7A5F0EF82F30849900E64ABB /* Snakey */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = "Animated-2";
+			path = Snakey;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -32,7 +32,7 @@
 		7A5F0EED2F30849900E64ABB = {
 			isa = PBXGroup;
 			children = (
-				7A5F0EF82F30849900E64ABB /* Animated-2 */,
+				7A5F0EF82F30849900E64ABB /* Snakey */,
 				7A5F0EF72F30849900E64ABB /* Products */,
 			);
 			sourceTree = "<group>";
@@ -40,7 +40,7 @@
 		7A5F0EF72F30849900E64ABB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				7A5F0EF62F30849900E64ABB /* Animated-2.app */,
+				7A5F0EF62F30849900E64ABB /* Snakey.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -48,9 +48,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		7A5F0EF52F30849900E64ABB /* Animated-2 */ = {
+		7A5F0EF52F30849900E64ABB /* Snakey */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 7A5F0F012F30849900E64ABB /* Build configuration list for PBXNativeTarget "Animated-2" */;
+			buildConfigurationList = 7A5F0F012F30849900E64ABB /* Build configuration list for PBXNativeTarget "Snakey" */;
 			buildPhases = (
 				7A5F0EF22F30849900E64ABB /* Sources */,
 				7A5F0EF32F30849900E64ABB /* Frameworks */,
@@ -61,13 +61,13 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				7A5F0EF82F30849900E64ABB /* Animated-2 */,
+				7A5F0EF82F30849900E64ABB /* Snakey */,
 			);
-			name = "Animated-2";
+			name = Snakey;
 			packageProductDependencies = (
 			);
 			productName = "Animated-2";
-			productReference = 7A5F0EF62F30849900E64ABB /* Animated-2.app */;
+			productReference = 7A5F0EF62F30849900E64ABB /* Snakey.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -85,7 +85,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 7A5F0EF12F30849900E64ABB /* Build configuration list for PBXProject "Animated-2" */;
+			buildConfigurationList = 7A5F0EF12F30849900E64ABB /* Build configuration list for PBXProject "Snakey" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -99,7 +99,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				7A5F0EF52F30849900E64ABB /* Animated-2 */,
+				7A5F0EF52F30849900E64ABB /* Snakey */,
 			);
 		};
 /* End PBXProject section */
@@ -309,7 +309,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		7A5F0EF12F30849900E64ABB /* Build configuration list for PBXProject "Animated-2" */ = {
+		7A5F0EF12F30849900E64ABB /* Build configuration list for PBXProject "Snakey" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				7A5F0EFF2F30849900E64ABB /* Debug */,
@@ -318,7 +318,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		7A5F0F012F30849900E64ABB /* Build configuration list for PBXNativeTarget "Animated-2" */ = {
+		7A5F0F012F30849900E64ABB /* Build configuration list for PBXNativeTarget "Snakey" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				7A5F0F022F30849900E64ABB /* Debug */,
