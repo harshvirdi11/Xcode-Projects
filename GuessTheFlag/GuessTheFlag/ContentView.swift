@@ -10,7 +10,7 @@ import SwiftUI
 struct ContentView: View {
     @State private var countries = ["Estonia", "France", "Germany", "Ireland", "Italy", "Nigeria", "Poland", "Spain", "UK", "Ukraine", "US"]
     @State private var correctAnswer = Int.random(in: 0...2)
-    @State private var showingScore: Bool = false
+    @State private var showingContinue: Bool = false
     @State private var gameEnd: Bool = false
     @State private var scoreTitle: String = ""
     @State private var score: Int = 0
@@ -51,7 +51,6 @@ struct ContentView: View {
                             .font(Font.largeTitle.weight(.semibold))
                     }
                     
-                    
                     ForEach(0..<3){ number in
                         Button{
                             flagTapped(number)
@@ -64,7 +63,6 @@ struct ContentView: View {
                         }
                         .rotation3DEffect(.degrees(number == selectedFlag ? rotNum : 0), axis: (x: 0.0, y: 1.0, z: 0.0))
                         .opacity(selectedFlag == -1 || number == selectedFlag ? 1 : 0.3)
-                        
                     }
                 }
                 .frame(maxWidth: .infinity)
@@ -73,35 +71,47 @@ struct ContentView: View {
                 .clipShape(.rect(cornerRadius: 20))
                 
                 Spacer()
+               
+                if showingContinue {
+                   
+                        Button{
+                            askQuestion()
+                            withAnimation{
+                                showingContinue = false
+                            }
+                        } label: {
+                            Text(" \(scoreTitle)   Next ")
+                                .font(Font.largeTitle.weight(.semibold))
+                                .foregroundStyle(Color.white)
+                                .padding()
+                                .background(Color(red: 0.1, green: 0.2, blue: 0.6).gradient)
+                                .clipShape(.capsule)
+                    }
+                }
                 Spacer()
-                
                 
                 Text("Question: \(question)")
                     .font(Font.largeTitle.weight(.semibold))
                     .foregroundStyle(Color.white)
+                
                 Spacer()
+                
                 Text("Score: \(score)")
                     .font(Font.largeTitle.weight(.semibold))
                     .foregroundStyle(Color.white)
-                Spacer()
                 
+                Spacer()
             }
             .padding()
-            
         }
         .ignoresSafeArea()
-        .alert(scoreTitle, isPresented: $showingScore) {
-            Button("Continue"){
-                askQuestion()
-            }
-        } message: {
-            Text("Your score is: \(score)")
-        }
-        
         .alert("Game Over", isPresented: $gameEnd){
             Button("Play Again"){
                 score = 0
                 question = 0
+                withAnimation{
+                    showingContinue = false
+                }
                 askQuestion()
             }
         }
@@ -113,18 +123,21 @@ struct ContentView: View {
     func flagTapped(_ number: Int){
         
         if number == correctAnswer{
-            scoreTitle = "Correct!"
+            scoreTitle = "✅"
             score += 1
             question += 1
         }
         else{
-            scoreTitle = "Wrong!"
+            scoreTitle = "❌"
             question += 1
         }
         if question == 10{
             gameEnd = true
         }
-        showingScore = true
+        
+        withAnimation{
+            showingContinue = true
+        }
     }
     
     func askQuestion(){
