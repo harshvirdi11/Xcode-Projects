@@ -15,7 +15,9 @@ struct ContentView: View {
     @State private var scoreTitle: String = ""
     @State private var score: Int = 0
     @State private var question: Int = 0
-    
+    @State private var rotNum: Double = 0.0
+    @State private var selectedFlag = -1
+
     struct FlagImageView: View{
         var name: String
         var body: some View{
@@ -53,9 +55,15 @@ struct ContentView: View {
                     ForEach(0..<3){ number in
                         Button{
                             flagTapped(number)
+                            selectedFlag = number
+                            withAnimation{
+                                rotNum+=360
+                            }
                         } label: {
-                            FlagImageView(name: countries[number])
+                                FlagImageView(name: countries[number])
                         }
+                        .rotation3DEffect(.degrees(number == selectedFlag ? rotNum : 0), axis: (x: 0.0, y: 1.0, z: 0.0))
+                        .opacity(selectedFlag == -1 || number == selectedFlag ? 1 : 0.3)
                         
                     }
                 }
@@ -103,6 +111,7 @@ struct ContentView: View {
     }
     
     func flagTapped(_ number: Int){
+        
         if number == correctAnswer{
             scoreTitle = "Correct!"
             score += 1
@@ -121,6 +130,7 @@ struct ContentView: View {
     func askQuestion(){
         countries.shuffle()
         correctAnswer = Int.random(in: 0...2)
+        selectedFlag = -1
     }
 }
 
