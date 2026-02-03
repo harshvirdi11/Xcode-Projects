@@ -48,9 +48,6 @@ struct ContentView: View {
                         Text(String(snake[num]))
                             .foregroundStyle(.white)
                             .font(.title2)
-                            /*.padding([.leading, .trailing], 4)
-                            .padding([.top, .bottom], 2)
-                             */
                             .frame(width: 20, height: 35)
                             .background(snakeColor.gradient)
                             .cornerRadius(5)
