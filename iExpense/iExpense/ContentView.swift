@@ -53,14 +53,20 @@ struct ContentView: View {
                         Spacer()
                         Text(item.amount, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
                             .font(Font.headline)
+                            .foregroundStyle(item.amount <= 10 ? Color.green : item.amount <= 100 ? Color.orange : Color.red)
                     }
                 }
                 .onDelete(perform: removeItems)
             }
             .navigationTitle("iExpense")
             .toolbar{
-                Button("Add Expense", systemImage: "plus"){
-                    showingAddExpense = true
+                ToolbarItem{
+                    Button("Add Expense", systemImage: "plus"){
+                        showingAddExpense = true
+                    }
+                }
+                ToolbarItem(placement: .navigationBarLeading){
+                    EditButton()
                 }
             }
             .sheet(isPresented: $showingAddExpense){
@@ -73,7 +79,6 @@ struct ContentView: View {
         expenses.items.remove(atOffsets: offsets)
     }
 }
-
 
 #Preview {
     ContentView()

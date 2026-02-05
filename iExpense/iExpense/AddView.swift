@@ -12,13 +12,15 @@ struct AddView: View {
     var expenses: Expenses
     @State private var name: String = ""
     @State private var type: String = "Personal"
-    @State private var amount: Double = 0.0
+    @State private var amount: Double?
     let types: [String] = ["Personal", "Business"]
+    @FocusState private var amountIsFocused: Bool
     
     var body: some View {
         NavigationStack {
             Form{
                 TextField("eg. Groceries", text: $name)
+                    .focused($amountIsFocused)
                 
                 Picker("Expense Type", selection: $type){
                     ForEach(types, id: \.self){
@@ -28,16 +30,35 @@ struct AddView: View {
                 
                 TextField("Amount", value: $amount, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
                     .keyboardType(.decimalPad)
+                    .focused($amountIsFocused)
             }
             .navigationTitle("Add Expense")
             .toolbar{
-                Button{
-                    expenses.items.append(ExpenseItem(name: name, type: type, amount: amount))
-                    dismiss()
-                } label: {
-                    Text("Save")
+                ToolbarItem{
+                    Button{
+                        expenses.items.append(ExpenseItem(name: name, type: type, amount: amount ?? 0.0))
+                        dismiss()
+                    } label: {
+                        Text("Save")
+                    }
                 }
-            }
+                ToolbarItem(placement:.cancellationAction){
+                    Button{
+                        dismiss()
+                    } label: {
+                        Text("Cancel")
+                    }
+                }
+                
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button{
+                        amountIsFocused = false
+                    } label:{
+                            Image(systemName: "keyboard.chevron.compact.down")
+                    }
+                }
+            }            
         }
     }
 }
