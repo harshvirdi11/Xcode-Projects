@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-struct ExpenseItem: Identifiable {
-    let id = UUID()
+struct ExpenseItem: Identifiable, Codable {
+    var id = UUID()
     let name: String
     let type: String
     let amount: Double
@@ -16,24 +16,55 @@ struct ExpenseItem: Identifiable {
 
 @Observable
 class Expenses{
-    var items: [ExpenseItem] = []
+    var items: [ExpenseItem] = [] {
+        didSet{
+            if let encoded = try? JSONEncoder().encode(items)
+            {
+                UserDefaults.standard.set(encoded, forKey: "items")
+            }
+        }
+    }
+    
+    init(){
+        if let savedItems = UserDefaults.standard.data(forKey: "items")
+        {
+            if let loadedItems = try? JSONDecoder().decode([ExpenseItem].self, from: savedItems)
+            {
+                self.items = loadedItems
+            }
+        }
+    }
 }
 
 struct ContentView: View {
+    @State var showingAddExpense: Bool = false
     @State var expenses: Expenses = Expenses()
     var body: some View {
         NavigationStack{
             List{
                 ForEach(expenses.items){ item in
-                    Text(item.name)
+                    HStack{
+                        VStack{
+                            Text(item.name)
+                                .font(Font.headline)
+                            Text(item.type)
+                                .font(Font.caption)
+                        }
+                        Spacer()
+                        Text(item.amount, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
+                            .font(Font.headline)
+                    }
                 }
                 .onDelete(perform: removeItems)
             }
             .navigationTitle("iExpense")
             .toolbar{
                 Button("Add Expense", systemImage: "plus"){
-                    expenses.items.append(ExpenseItem(name: "Test", type: "Food", amount: 100.0))
+                    showingAddExpense = true
                 }
+            }
+            .sheet(isPresented: $showingAddExpense){
+                AddView(expenses: expenses)
             }
         }
     }
