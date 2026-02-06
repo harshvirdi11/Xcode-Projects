@@ -42,21 +42,58 @@ struct ContentView: View {
     var body: some View {
         NavigationStack{
             List{
-                ForEach(expenses.items){ item in
-                    HStack{
-                        VStack{
-                            Text(item.name)
-                                .font(Font.headline)
-                            Text(item.type)
-                                .font(Font.caption)
+                Section("Personal Expenses"){
+                    let personalItems = expenses.items.filter{$0.type == "Personal"}
+                    
+                    if personalItems.isEmpty
+                    {
+                        Text("No personal expenses yet.")
+                            .foregroundColor(.secondary)
+                    }
+                    else{
+                        ForEach(personalItems){ item in
+                            HStack{
+                                VStack{
+                                    Text(item.name)
+                                        .font(Font.headline)
+                                    Text(item.type)
+                                        .font(Font.caption)
+                                }
+                                Spacer()
+                                Text(item.amount, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
+                                    .font(Font.headline)
+                                    .foregroundStyle(item.amount <= 10 ? Color.green : item.amount <= 100 ? Color.orange : Color.red)
+                            }
                         }
-                        Spacer()
-                        Text(item.amount, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
-                            .font(Font.headline)
-                            .foregroundStyle(item.amount <= 10 ? Color.green : item.amount <= 100 ? Color.orange : Color.red)
+                        .onDelete(perform: removePersonalItems)
                     }
                 }
-                .onDelete(perform: removeItems)
+    
+                
+                Section("Business Expenses"){
+                    let businessItems = expenses.items.filter{$0.type == "Business"}
+                    
+                    if businessItems.isEmpty
+                    {
+                        Text("No business expenses yet.")
+                            .foregroundColor(.secondary)
+                    }
+                    ForEach(businessItems){ item in
+                        HStack{
+                            VStack{
+                                Text(item.name)
+                                    .font(Font.headline)
+                                Text(item.type)
+                                    .font(Font.caption)
+                            }
+                            Spacer()
+                            Text(item.amount, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
+                                .font(Font.headline)
+                                .foregroundStyle(item.amount <= 10 ? Color.green : item.amount <= 100 ? Color.orange : Color.red)
+                        }
+                    }
+                    .onDelete(perform: removeBusinessItems)
+                }
             }
             .navigationTitle("iExpense")
             .toolbar{
@@ -75,8 +112,26 @@ struct ContentView: View {
         }
     }
     
-    func removeItems(at offsets: IndexSet){
-        expenses.items.remove(atOffsets: offsets)
+    func removePersonalItems(at offsets: IndexSet){
+        let personalItems = expenses.items.filter{$0.type == "Personal"}
+        for index in offsets{
+            let itemToDelete = personalItems[index]
+            
+            if let mainIndex = expenses.items.firstIndex(where: {itemToDelete.id == $0.id}){
+                expenses.items.remove(at: mainIndex)
+            }
+        }
+    }
+    
+    func removeBusinessItems(at offsets: IndexSet){
+        let businessItems = expenses.items.filter{$0.type == "Business"}
+        for index in offsets{
+            let itemToDelete = businessItems[index]
+            
+            if let mainIndex = expenses.items.firstIndex(where: {itemToDelete.id == $0.id}){
+                expenses.items.remove(at: mainIndex)
+            }
+        }
     }
 }
 
