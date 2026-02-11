@@ -28,7 +28,6 @@ struct DescriptionView: View {
             
                 Text(astronaut.description)
                     .font(.body)
-                
             }
             .padding(.horizontal)
         }
