@@ -37,7 +37,6 @@ class Expenses{
 }
 
 struct ContentView: View {
-    @State var showingAddExpense: Bool = false
     @State var expenses: Expenses = Expenses()
     var body: some View {
         NavigationStack{
@@ -98,16 +97,15 @@ struct ContentView: View {
             .navigationTitle("iExpense")
             .toolbar{
                 ToolbarItem{
-                    Button("Add Expense", systemImage: "plus"){
-                        showingAddExpense = true
+                    NavigationLink{
+                        AddView(expenses: expenses)
+                    } label: {
+                        Label("Add Expense", systemImage: "plus")
                     }
                 }
                 ToolbarItem(placement: .navigationBarLeading){
                     EditButton()
                 }
-            }
-            .sheet(isPresented: $showingAddExpense){
-                AddView(expenses: expenses)
             }
         }
     }
