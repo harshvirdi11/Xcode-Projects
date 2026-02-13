@@ -12,50 +12,51 @@ struct ListView: View {
     let missions: [Mission]
     let astronauts: [String: Astronaut]
     var body: some View {
-            List{
-                ForEach(missions) { mission in
-                    NavigationLink {
-                        MissionView(mission: mission, astronauts: astronauts)
-                    } label: {
-                        VStack {
+        List{
+            ForEach(missions) { mission in
+                NavigationLink(value: mission) {
+                    VStack {
+                        VStack{
+                            Image(mission.image)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 100, height: 100)
+                                .padding()
                             VStack{
-                                Image(mission.image)
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 100, height: 100)
-                                    .padding()
-                                VStack{
-                                    Text(mission.displayName)
-                                        .font(Font.headline)
-                                        .foregroundStyle(.white)
-                                    Text(mission.formattedLaunchDate)
-                                        .font(.subheadline)
-                                        .foregroundStyle(.gray)
-                                }
-                                .padding(.vertical)
-                                .frame(maxWidth: .infinity)
-                                .background(.lightBackground)
+                                Text(mission.displayName)
+                                    .font(Font.headline)
+                                    .foregroundStyle(.white)
+                                Text(mission.formattedLaunchDate)
+                                    .font(.subheadline)
+                                    .foregroundStyle(.gray)
                             }
-                            .clipShape(.rect(cornerRadius: 10))
-                            .overlay{
-                                RoundedRectangle(cornerRadius: 10)
-                                    .stroke(.lightBackground)
-                            }
-                            
-                            CustomDivider()
-                                .padding(.vertical)
+                            .padding(.vertical)
+                            .frame(maxWidth: .infinity)
+                            .background(.lightBackground)
                         }
+                        .clipShape(.rect(cornerRadius: 10))
+                        .overlay{
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(.lightBackground)
+                        }
+                        
+                        CustomDivider()
+                            .padding(.vertical)
                     }
-                    .listRowBackground(Color.darkBackground)
-                    .listRowSeparator(.hidden)
-                    .listRowInsets(EdgeInsets())
-                    
                 }
-                .padding([.horizontal])
+                .listRowBackground(Color.darkBackground)
+                .listRowSeparator(.hidden)
+                .listRowInsets(EdgeInsets())
+                
             }
-            .listStyle(.plain)
-            .scrollContentBackground(.hidden)
-            .background(.darkBackground)
+            .padding([.horizontal])
+        }
+        .listStyle(.plain)
+        .scrollContentBackground(.hidden)
+        .background(.darkBackground)
+        .navigationDestination(for: Mission.self){mission in
+            MissionView(mission: mission, astronauts: astronauts)
+        }
     }
 }
 
