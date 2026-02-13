@@ -26,7 +26,7 @@ struct ObservableDetailView: View {
         NavigationLink("Go to next view", value: Int.random(in: 0..<100))
             .navigationTitle(Text("\(number)"))
             .toolbar{
-                Button("Go to root"){
+                Button("Home"){
                     navManager.reset()
                 }
             }

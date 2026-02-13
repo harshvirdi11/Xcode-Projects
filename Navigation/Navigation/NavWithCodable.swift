@@ -10,6 +10,7 @@ import Observation
 
 @Observable
 class PathStore {
+    
     var path: [Int]{
         didSet{
             save()
