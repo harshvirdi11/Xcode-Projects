@@ -33,6 +33,7 @@ struct AddView: View {
                     .focused($amountIsFocused)
             }
             .navigationTitle("Add Expense")
+            .navigationBarBackButtonHidden()
             .toolbar{
                 ToolbarItem{
                     Button{
