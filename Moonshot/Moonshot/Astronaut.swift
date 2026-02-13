@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Astronaut: Codable, Identifiable{
+struct Astronaut: Codable, Identifiable, Hashable{
     var id: String
     var name: String
     var description: String
