@@ -29,6 +29,10 @@ class PathStore {
         }
     }
     
+    func reset(){
+        path.removeAll()
+    }
+    
     init(){
         
         guard let data = try? Data(contentsOf: savePath)
@@ -47,10 +51,15 @@ class PathStore {
 
 struct DetailView: View {
     var number: Int
-
+    var pathStore: PathStore
     var body: some View {
         NavigationLink("Go to Random Number", value: Int.random(in: 1...1000))
             .navigationTitle("Number: \(number)")
+            .toolbar{
+                Button("Home"){
+                    pathStore.reset()
+                }
+            }
     }
 }
 
@@ -59,9 +68,9 @@ struct NavWithCodable: View {
 
     var body: some View {
         NavigationStack(path: $pathStore.path) {
-            DetailView(number: 0)
+            DetailView(number: 0, pathStore: pathStore)
                 .navigationDestination(for: Int.self) { i in
-                    DetailView(number: i)
+                    DetailView(number: i, pathStore: pathStore)
                 }
         }
     }
