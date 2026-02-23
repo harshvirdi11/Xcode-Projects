@@ -35,7 +35,7 @@ struct ContentView: View {
                 }
                 .onDelete(perform: deleteItems)
             }
-                .navigationTitle(Text("Bookworm"))
+                .navigationTitle(Text("Book Review"))
                 .navigationDestination(for: Book.self){ book in
                     DetailView(book: book)
                 }

@@ -8,7 +8,7 @@ import SwiftData
 import SwiftUI
 
 @main
-struct BookwormApp: App {
+struct BookReviewApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
