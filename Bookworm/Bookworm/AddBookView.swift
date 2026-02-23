@@ -33,7 +33,6 @@ struct AddBookView: View {
                         {
                             Text("\($0)")
                         }
-                        
                     }
                 }
                 
@@ -44,14 +43,20 @@ struct AddBookView: View {
                 
                 Section{
                     Button("Save"){
-                        let newBook = Book(title: title, author: author, genre: genre, review: review, rating: rating)
+                        let newBook = Book(title: title, author: author, genre: genre, review: review, rating: rating, date: Date.now)
                         modelContext.insert(newBook)
                         dismiss()
                     }
                 }
+                .disabled(title.isEmpty || author.isEmpty || review.isEmpty)
                 
             }
             .navigationTitle("Add Book")
+            .toolbar{
+                Button(role: .close){
+                    dismiss()
+                }
+            }
         }
     }
 }
