@@ -6,43 +6,31 @@
 //
 
 import SwiftUI
+import SwiftData
 
-struct ExpenseItem: Identifiable, Codable {
-    var id = UUID()
-    let name: String
-    let type: String
-    let amount: Double
-}
-
-@Observable
-class Expenses{
-    var items: [ExpenseItem] = [] {
-        didSet{
-            if let encoded = try? JSONEncoder().encode(items)
-            {
-                UserDefaults.standard.set(encoded, forKey: "items")
-            }
-        }
-    }
+@Model
+class ExpenseItem{
+    var name: String
+    var type: String
+    var amount: Double
+    var date: Date
     
-    init(){
-        if let savedItems = UserDefaults.standard.data(forKey: "items")
-        {
-            if let loadedItems = try? JSONDecoder().decode([ExpenseItem].self, from: savedItems)
-            {
-                self.items = loadedItems
-            }
-        }
+    init(name: String, type: String, amount: Double, date: Date = .now) {
+        self.name = name
+        self.type = type
+        self.amount = amount
+        self.date = date
     }
 }
 
 struct ContentView: View {
-    @State var expenses: Expenses = Expenses()
+    @Environment(\.modelContext) var modelContext
+    @Query(sort: \ExpenseItem.date) var expenses: [ExpenseItem]
     var body: some View {
         NavigationStack{
             List{
                 Section("Personal Expenses"){
-                    let personalItems = expenses.items.filter{$0.type == "Personal"}
+                    let personalItems = expenses.filter{$0.type == "Personal"}
                     
                     if personalItems.isEmpty
                     {
@@ -52,7 +40,7 @@ struct ContentView: View {
                     else{
                         ForEach(personalItems){ item in
                             HStack{
-                                VStack{
+                                VStack(alignment: .leading){
                                     Text(item.name)
                                         .font(Font.headline)
                                     Text(item.type)
@@ -70,7 +58,7 @@ struct ContentView: View {
     
                 
                 Section("Business Expenses"){
-                    let businessItems = expenses.items.filter{$0.type == "Business"}
+                    let businessItems = expenses.filter{$0.type == "Business"}
                     
                     if businessItems.isEmpty
                     {
@@ -79,7 +67,7 @@ struct ContentView: View {
                     }
                     ForEach(businessItems){ item in
                         HStack{
-                            VStack{
+                            VStack(alignment: .leading){
                                 Text(item.name)
                                     .font(Font.headline)
                                 Text(item.type)
@@ -98,7 +86,7 @@ struct ContentView: View {
             .toolbar{
                 ToolbarItem{
                     NavigationLink{
-                        AddView(expenses: expenses)
+                        AddView()
                     } label: {
                         Label("Add Expense", systemImage: "plus")
                     }
@@ -111,23 +99,23 @@ struct ContentView: View {
     }
     
     func removePersonalItems(at offsets: IndexSet){
-        let personalItems = expenses.items.filter{$0.type == "Personal"}
+        let personalItems = expenses.filter{$0.type == "Personal"}
         for index in offsets{
             let itemToDelete = personalItems[index]
             
-            if let mainIndex = expenses.items.firstIndex(where: {itemToDelete.id == $0.id}){
-                expenses.items.remove(at: mainIndex)
+            if let mainIndex = expenses.firstIndex(where: {itemToDelete.id == $0.id}){
+                modelContext.delete(expenses[mainIndex])
             }
         }
     }
     
     func removeBusinessItems(at offsets: IndexSet){
-        let businessItems = expenses.items.filter{$0.type == "Business"}
+        let businessItems = expenses.filter{$0.type == "Business"}
         for index in offsets{
             let itemToDelete = businessItems[index]
             
-            if let mainIndex = expenses.items.firstIndex(where: {itemToDelete.id == $0.id}){
-                expenses.items.remove(at: mainIndex)
+            if let mainIndex = expenses.firstIndex(where: {itemToDelete.id == $0.id}){
+                modelContext.delete(expenses[mainIndex])
             }
         }
     }
