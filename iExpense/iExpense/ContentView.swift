@@ -23,22 +23,59 @@ class ExpenseItem{
     }
 }
 
+enum FilterType: String, CaseIterable{
+    case all = "All"
+    case personal = "Personal"
+    case business = "Business"
+}
+
 struct ContentView: View {
     @Environment(\.modelContext) var modelContext
     @Query(sort: \ExpenseItem.date) var expenses: [ExpenseItem]
+    @State private var selectedFilter = FilterType.all
+    
     var body: some View {
         NavigationStack{
             List{
-                Section("Personal Expenses"){
-                    let personalItems = expenses.filter{$0.type == "Personal"}
-                    
-                    if personalItems.isEmpty
-                    {
-                        Text("No personal expenses yet.")
-                            .foregroundColor(.secondary)
+                if(selectedFilter == FilterType.all || selectedFilter == .personal) {
+                    Section("Personal Expenses"){
+                        let personalItems = expenses.filter{$0.type == "Personal"}
+                        
+                        if personalItems.isEmpty
+                        {
+                            Text("No personal expenses yet.")
+                                .foregroundColor(.secondary)
+                        }
+                        else{
+                            ForEach(personalItems){ item in
+                                HStack{
+                                    VStack(alignment: .leading){
+                                        Text(item.name)
+                                            .font(Font.headline)
+                                        Text(item.type)
+                                            .font(Font.caption)
+                                    }
+                                    Spacer()
+                                    Text(item.amount, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
+                                        .font(Font.headline)
+                                        .foregroundStyle(item.amount <= 10 ? Color.green : item.amount <= 100 ? Color.orange : Color.red)
+                                }
+                            }
+                            .onDelete(perform: removePersonalItems)
+                        }
                     }
-                    else{
-                        ForEach(personalItems){ item in
+                }
+    
+                if(selectedFilter == FilterType.all || selectedFilter == FilterType.business) {
+                    Section("Business Expenses"){
+                        let businessItems = expenses.filter{$0.type == "Business"}
+                        
+                        if businessItems.isEmpty
+                        {
+                            Text("No business expenses yet.")
+                                .foregroundColor(.secondary)
+                        }
+                        ForEach(businessItems){ item in
                             HStack{
                                 VStack(alignment: .leading){
                                     Text(item.name)
@@ -52,34 +89,8 @@ struct ContentView: View {
                                     .foregroundStyle(item.amount <= 10 ? Color.green : item.amount <= 100 ? Color.orange : Color.red)
                             }
                         }
-                        .onDelete(perform: removePersonalItems)
+                        .onDelete(perform: removeBusinessItems)
                     }
-                }
-    
-                
-                Section("Business Expenses"){
-                    let businessItems = expenses.filter{$0.type == "Business"}
-                    
-                    if businessItems.isEmpty
-                    {
-                        Text("No business expenses yet.")
-                            .foregroundColor(.secondary)
-                    }
-                    ForEach(businessItems){ item in
-                        HStack{
-                            VStack(alignment: .leading){
-                                Text(item.name)
-                                    .font(Font.headline)
-                                Text(item.type)
-                                    .font(Font.caption)
-                            }
-                            Spacer()
-                            Text(item.amount, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
-                                .font(Font.headline)
-                                .foregroundStyle(item.amount <= 10 ? Color.green : item.amount <= 100 ? Color.orange : Color.red)
-                        }
-                    }
-                    .onDelete(perform: removeBusinessItems)
                 }
             }
             .navigationTitle("iExpense")
@@ -91,6 +102,20 @@ struct ContentView: View {
                         Label("Add Expense", systemImage: "plus")
                     }
                 }
+                
+                ToolbarItem{
+                    Menu{
+                        Picker("Filter", selection: $selectedFilter){
+                            ForEach(FilterType.allCases, id: \.self){
+                                type in
+                                Text(type.rawValue)
+                            }
+                        }
+                    } label: {
+                        Image(systemName: "menucard")
+                    }
+                }
+                
                 ToolbarItem(placement: .navigationBarLeading){
                     EditButton()
                 }
