@@ -4,20 +4,24 @@
 //
 //  Created by Harsh Virdi on 03/03/26.
 
-
 import SwiftUI
 import PhotosUI
 import UIKit
 import CoreImage
 import CoreImage.CIFilterBuiltins
+import StoreKit
 
 struct ContentView: View {
     @State private var filterIntensity: Double = 0.5
     @State private var processedImage: Image?
     @State private var selectedItem: PhotosPickerItem?
-    
-    @State private var currentFilter = CIFilter.sepiaTone()
+    @State private var showingFilters: Bool = false
+
+    @State private var currentFilter: CIFilter = CIFilter.sepiaTone()
     let context = CIContext()
+    
+    @AppStorage("filterCount") var filterCount: Int = 0
+    @Environment(\.requestReview) var requestReview
     
     var body: some View {
         NavigationStack {
@@ -46,14 +50,43 @@ struct ContentView: View {
                     Button("Change filter", action: changeFilter)
                 }
                 Spacer()
+                
+                if let processedImage {
+                    ShareLink(
+                        item: processedImage,
+                        preview: SharePreview("InstaFilter image", image: processedImage)
+                    ) {
+                        Label("Share", systemImage: "square.and.arrow.up")
+                    }
+                }
             }
             .navigationTitle("InstaFilter")
             .padding([.horizontal,.bottom])
+            .confirmationDialog("Filters", isPresented: $showingFilters){
+                Button("Crystallize") { setFilter(CIFilter.crystallize()) }
+                Button("Edges") { setFilter(CIFilter.edges()) }
+                Button("Gaussian Blur") { setFilter(CIFilter.gaussianBlur()) }
+                Button("Pixellate") { setFilter(CIFilter.pixellate()) }
+                Button("Sepia Tone") { setFilter(CIFilter.sepiaTone()) }
+                Button("Unsharp Mask") { setFilter(CIFilter.unsharpMask()) }
+                Button("Vignette") { setFilter(CIFilter.vignette()) }
+                Button("Cancel", role: .cancel) { }
+            }
         }
     }
     
     func changeFilter() {
+        showingFilters = true
+    }
+    
+    func setFilter(_ filter: CIFilter) {
+        currentFilter = filter
+        loadImage()
         
+        filterCount += 1
+        if filterCount > 20 {
+            requestReview()
+        }
     }
     
     func loadImage() {
@@ -70,7 +103,14 @@ struct ContentView: View {
     }
     
     func applyProcessing(){
-        currentFilter.intensity = Float(filterIntensity)
+        let inputKeys = currentFilter.inputKeys
+        
+        if inputKeys.contains(kCIInputIntensityKey){
+            currentFilter.setValue(filterIntensity, forKey: kCIInputIntensityKey) }
+        
+        if inputKeys.contains(kCIInputRadiusKey) { currentFilter.setValue(filterIntensity * 200, forKey: kCIInputRadiusKey) }
+        
+        if inputKeys.contains(kCIInputScaleKey) { currentFilter.setValue(filterIntensity * 10, forKey: kCIInputScaleKey) }
         
         guard let outputImage = currentFilter.outputImage else { return }
         guard let cgImage = context.createCGImage(outputImage, from: outputImage.extent) else { return }
