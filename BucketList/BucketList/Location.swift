@@ -24,6 +24,6 @@ struct Location: Codable, Equatable, Identifiable{
     #endif
     
     static func ==(lhs: Location, rhs: Location) -> Bool {
-        lhs.id == rhs.id
+        lhs.id == rhs.id && lhs.name == rhs.name
     }
 }
