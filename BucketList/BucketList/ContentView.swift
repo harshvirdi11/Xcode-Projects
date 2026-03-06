@@ -58,6 +58,8 @@ struct ContentView: View {
                     }
                 }
             }
+            .sensoryFeedback(.impact(weight: .medium), trigger: viewModel.selectedLocation)
+            .sensoryFeedback(.impact(weight: .heavy), trigger: viewModel.locations)
         }
         
         else {
