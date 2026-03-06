@@ -10,6 +10,7 @@ import Contacts
 import Foundation
 import MapKit
 import SwiftUI
+import LocalAuthentication
 
 extension ContentView {
     @Observable
@@ -17,6 +18,7 @@ extension ContentView {
         private(set) var locations: [Location]
         var selectedLocation: Location?
         let savedPath = URL.documentsDirectory.appendingPathComponent("SavedPlaces")
+        var isUnlocked = false
         
         func addLocation(point: CLLocationCoordinate2D)
         {
@@ -71,6 +73,24 @@ extension ContentView {
                 save()
             }
         }
+        
+        func authenticate() {
+            let context = LAContext()
+            Task {
+                do {
+                    let success = try await context.evaluatePolicy(.deviceOwnerAuthentication, localizedReason: "Authenticate to continue")
+    
+                    if success {
+                        await MainActor.run{
+                            isUnlocked = true
+                        }
+                    }
+                } catch {
+                    print("Authentication failed: \(error.localizedDescription)")
+                }
+            }
+        }
+
         
         init() {
             do {

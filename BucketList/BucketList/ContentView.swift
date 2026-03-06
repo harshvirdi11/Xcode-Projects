@@ -20,41 +20,53 @@ struct ContentView: View {
     @State private var viewModel = ViewModel()
     
     var body: some View {
-        MapReader { proxy in
-            Map(initialPosition: startPosition)
-            {
-                ForEach(viewModel.locations) { location in
-                    Annotation(location.name, coordinate: location.coordinate){
-                        VStack{
-                            Image(systemName: "mappin.and.ellipse")
-                                .resizable()
-                                .foregroundStyle(Color.red)
-                                .frame(width: 44, height: 44)
-                                .onTapGesture{
-                                    guard location.name != "Searching..." else { return }
-                                    viewModel.selectedLocation = location
+        if viewModel.isUnlocked {
+            MapReader { proxy in
+                Map(initialPosition: startPosition)
+                {
+                    ForEach(viewModel.locations) { location in
+                        Annotation(location.name, coordinate: location.coordinate){
+                            VStack{
+                                Image(systemName: "mappin.and.ellipse")
+                                    .resizable()
+                                    .foregroundStyle(Color.red)
+                                    .frame(width: 44, height: 44)
+                                    .onTapGesture{
+                                        guard location.name != "Searching..." else { return }
+                                        viewModel.selectedLocation = location
+                                    }
+                                if location.name == "Searching..."{
+                                    ProgressView()
+                                        .scaleEffect(0.5)
                                 }
-                            if location.name == "Searching..."{
-                                ProgressView()
-                                    .scaleEffect(0.5)
                             }
                         }
                     }
                 }
-            }
-            .onTapGesture{ position in
-                if let coordinate = proxy.convert(position, from: .local) {
-                    viewModel.addLocation(point: coordinate)
+                .onTapGesture{ position in
+                    if let coordinate = proxy.convert(position, from: .local) {
+                        viewModel.addLocation(point: coordinate)
+                    }
+                }
+                .sheet(item: $viewModel.selectedLocation){
+                    location in
+                    EditView(location: location) {
+                        newLocation in
+                        viewModel.updateLocation(old: location, new: newLocation)
+                    } onDelete: { location in
+                        viewModel.delete(location)
+                    }
                 }
             }
-            .sheet(item: $viewModel.selectedLocation){
-                location in
-                EditView(location: location) {
-                    newLocation in
-                    viewModel.updateLocation(old: location, new: newLocation)
-                } onDelete: { location in
-                    viewModel.delete(location)
-                }
+        }
+        
+        else {
+            ZStack {
+                Color.black.opacity(0.4).ignoresSafeArea()
+                Button("Unlock", action: viewModel.authenticate)
+                    .font(.title)
+                    .padding()
+                    .background(.ultraThinMaterial, in: Capsule())
             }
         }
     }
