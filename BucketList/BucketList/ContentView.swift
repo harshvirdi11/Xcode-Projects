@@ -18,7 +18,7 @@ enum mapMode: String, CaseIterable{
         switch self {
             case .standard:
             return .standard
-        case .hybrid:
+            case .hybrid:
             return .hybrid
         }
     }
