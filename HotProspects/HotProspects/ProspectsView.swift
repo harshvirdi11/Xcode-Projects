@@ -8,6 +8,7 @@ import CodeScanner
 import SwiftUI
 import SwiftData
 import AVFoundation
+import UserNotifications
 
 struct ProspectsView: View {
     enum FilterType{
@@ -60,6 +61,11 @@ struct ProspectsView: View {
                             prospect.isContacted = true
                         }
                         .tint(.green)
+                        
+                        Button("Remind me", systemImage: "bell"){
+                            addNotification(prospect: prospect)
+                        }
+                        .tint(.orange)
                     }
                 }
                 .tag(prospect)
@@ -120,6 +126,41 @@ struct ProspectsView: View {
             modelContext.delete(prospect)
         }
         selectedProspects.removeAll()
+    }
+    
+    func addNotification(prospect: Prospect) {
+        let center = UNUserNotificationCenter.current()
+        
+        let addRequest = {
+            let content = UNMutableNotificationContent()
+            content.title = "Contact \(prospect.name)"
+            content.subtitle =  prospect.emailAddress
+            content.sound = .default
+            
+            var dateComponents = DateComponents()
+            dateComponents.hour = 9
+            
+            let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
+             
+            let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+            center.add(request)
+        }
+        
+        center.getNotificationSettings { settings in
+            if settings.authorizationStatus == .authorized {
+                addRequest()
+            }
+            else {
+                center.requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
+                    if granted {
+                        addRequest()
+                    }
+                    else if let error {
+                        print("Error requesting notification permission: \(error)")
+                    }
+                }
+            }
+        }
     }
     
     init(filter: FilterType) {
