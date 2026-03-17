@@ -12,7 +12,7 @@ import UserNotifications
 
 struct ProspectsView: View {
     enum FilterType{
-        case none, contacted, unContacted
+        case none, contacted, uncontacted
     }
     
     @Environment(\.modelContext) var modelContext
@@ -20,6 +20,7 @@ struct ProspectsView: View {
     @State private var isShowingScanner: Bool = false
     @State private var selectedProspects = Set<Prospect>()
     @State private var editMode: EditMode = .inactive
+    @Binding private var sortType: SortTypes
     
     let filter: FilterType
     
@@ -29,7 +30,7 @@ struct ProspectsView: View {
             return "Everyone"
         case .contacted:
             return "Contacted"
-        case .unContacted:
+        case .uncontacted:
             return "Uncontacted"
         }
     }
@@ -38,42 +39,37 @@ struct ProspectsView: View {
         NavigationStack{
             List(prospects, selection: $selectedProspects) {
                 prospect in
-                VStack(alignment: .leading){
-                    Text(prospect.name)
-                        .font(.headline)
-                    Text(prospect.emailAddress)
-                        .foregroundStyle(.secondary)
+                if editMode == .inactive {
+                    NavigationLink{
+                      EditView(prospect: prospect)
+                    }
+                    label: {
+                        prospectRow(prospect)
+                    }
+                    .tag(prospect)
                 }
-                .swipeActions{
-                    Button("Delete", systemImage: "trash", role: .destructive) {
-                        modelContext.delete(prospect)
-                    }
-                    
-                    if prospect.isContacted {
-                        Button("Mark Uncontacted", systemImage: "person.crop.circle.badge.xmark") {
-                            prospect.isContacted = false
-                        }
-                        .tint(.blue)
-                    }
-                    
-                    else {
-                        Button("Mark contacted", systemImage: "person.crop.circle.badge.checkmark") {
-                            prospect.isContacted = true
-                        }
-                        .tint(.green)
-                        
-                        Button("Remind me", systemImage: "bell"){
-                            addNotification(prospect: prospect)
-                        }
-                        .tint(.orange)
-                    }
+                
+                else {
+                    prospectRow(prospect)
+                        .tag(prospect)
                 }
-                .tag(prospect)
+                
             }
             .environment(\.editMode, $editMode)
             .animation(.default, value: prospects)
                 .navigationTitle(title)
                 .toolbar{
+                    ToolbarItem {
+                        Menu{
+                            Picker("Sort Order", selection: $sortType) {
+                                ForEach(SortTypes.allCases, id: \.self) { type in
+                                    Text(type.rawValue).tag(type)
+                                }
+                            }
+                        } label: {
+                            Image(systemName: "arrow.2.circlepath.circle")
+                        }
+                    }
                     ToolbarItem(placement: .topBarLeading) {
                         Button(editMode.isEditing ? "Done" : "Edit") {
                             withAnimation{
@@ -163,19 +159,76 @@ struct ProspectsView: View {
         }
     }
     
-    init(filter: FilterType) {
-        self.filter = filter
-        if filter != .none {
-            let showcontactedOnly = filter == .contacted
-            _prospects = Query(filter: #Predicate {
-                $0.isContacted == showcontactedOnly
-            }, sort: [SortDescriptor(\Prospect.name)])
+    @ViewBuilder
+    func prospectRow(_ prospect: Prospect) -> some View {
+        HStack {
+            VStack(alignment: .leading){
+                Text(prospect.name)
+                    .font(.headline)
+                Text(prospect.emailAddress)
+                    .foregroundStyle(.secondary)
+            }
+            Spacer()
+            if prospect.isContacted {
+                HStack{
+                    Image(systemName: "checkmark.circle.fill")
+                    Text("Contacted")
+                }
+                .foregroundStyle(.white)
+                .padding(5)
+                .background(.green)
+                .clipShape(.capsule)
+            }
         }
+        .swipeActions{
+            Button("Delete", systemImage: "trash", role: .destructive) {
+                modelContext.delete(prospect)
+            }
+            
+            if prospect.isContacted {
+                Button("Mark Uncontacted", systemImage: "person.crop.circle.badge.xmark") {
+                    prospect.isContacted = false
+                }
+                .tint(.blue)
+            }
+            
+            else {
+                Button("Mark contacted", systemImage: "person.crop.circle.badge.checkmark") {
+                    prospect.isContacted = true
+                }
+                .tint(.green)
+                
+                Button("Remind me", systemImage: "bell"){
+                    addNotification(prospect: prospect)
+                }
+                .tint(.orange)
+            }
+        }
+    }
+    
+    init(filter: FilterType, sortType: Binding<SortTypes>) {
+        self.filter = filter
+        _sortType = sortType
+        let showAll = (filter == .none)
+        let showContactedOnly = (filter == .contacted)
+        
+        let predicate = #Predicate<Prospect> { prospect in
+                showAll ? true : prospect.isContacted == showContactedOnly
+            }
+        
+       let sortDescriptor: SortDescriptor<Prospect>
+        if sortType.wrappedValue == .name {
+                    sortDescriptor = SortDescriptor(\Prospect.name)
+                } else {
+                    sortDescriptor = SortDescriptor(\Prospect.dateAdded, order: .reverse)
+                }
+        _prospects = Query(filter: predicate, sort: [sortDescriptor])
+        
     }
     
 }
 
 #Preview {
-    ProspectsView(filter: .none)
+    ProspectsView(filter: .none, sortType: .constant(SortTypes.name))
         .modelContainer(for: Prospect.self)
 }
