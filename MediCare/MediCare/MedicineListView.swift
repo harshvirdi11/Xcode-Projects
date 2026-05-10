@@ -18,6 +18,8 @@ struct MedicineListView: View {
             List {
                 FilteredMedicineListView(searchText: searchText)
             }
+            .listStyle(.plain)
+            .background(Color(.systemGroupedBackground))
             .navigationTitle(Text("Medicines"))
             .searchable(text: $searchText, prompt: Text("Search Medicines"))
             .sheet(isPresented: $isPresented){

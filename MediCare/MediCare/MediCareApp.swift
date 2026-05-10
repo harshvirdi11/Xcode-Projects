@@ -13,7 +13,7 @@ struct MediCareApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .modelContainer(for: [Medicine.self, DoseLog.self, Doctor.self, Appointment.self])
+                .modelContainer(for: [Medicine.self, DoseLog.self])
         }
     }
 }

@@ -19,16 +19,6 @@ struct ContentView: View {
                 .tabItem {
                     Label("Medicines", systemImage: "pill")
                 }
-            
-            DoctorListView()
-                .tabItem {
-                    Label("Doctors", systemImage: "stethoscope")
-                }
-            
-            AppointmentListView()
-                .tabItem {
-                    Label("Appointments", systemImage: "calendar")
-                }
         }
     }
 }
