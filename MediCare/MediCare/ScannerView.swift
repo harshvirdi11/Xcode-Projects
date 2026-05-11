@@ -12,9 +12,9 @@ struct ScannerView: UIViewControllerRepresentable {
     @Binding var scannedText: String
     @Environment(\.dismiss) var dismiss
     
-    // 1. This is where we will create the Apple Camera view
+    // 1. This will create the Apple Camera view
     func makeUIViewController(context: Context) -> DataScannerViewController {
-        // We will build the camera here
+        // will build the camera here
         let scanner = DataScannerViewController(
             recognizedDataTypes: [.text()],
             qualityLevel: .balanced,
@@ -30,7 +30,7 @@ struct ScannerView: UIViewControllerRepresentable {
         return scanner
     }
     
-    // 2. This is where we handle any SwiftUI state updates
+    // 2. This handles any SwiftUI state updates
     func updateUIViewController(_ uiViewController: DataScannerViewController, context: Context) {
         try? uiViewController.startScanning()
     }
@@ -47,11 +47,8 @@ struct ScannerView: UIViewControllerRepresentable {
         }
         
         func dataScanner(_ dataScanner: DataScannerViewController, didTapOn item: RecognizedItem) {
-            // When the user taps a highlighted word, grab the text
             if case .text(let text) = item {
-                // 1. Send text back to the main view
                 parent.scannedText = text.transcript
-                // 2. Close the camera sheet
                 parent.dismiss()
             }
         }

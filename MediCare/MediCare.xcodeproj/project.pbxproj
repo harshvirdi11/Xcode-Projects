@@ -10,9 +10,22 @@
 		7A20B7C32FADABA1009211A3 /* MediCare.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MediCare.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		7AF6A7562FB1BB7F0001A86D /* Exceptions for "MediCare" folder in "MediCare" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 7A20B7C22FADABA1009211A3 /* MediCare */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		7A20B7C52FADABA1009211A3 /* MediCare */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				7AF6A7562FB1BB7F0001A86D /* Exceptions for "MediCare" folder in "MediCare" target */,
+			);
 			path = MediCare;
 			sourceTree = "<group>";
 		};
@@ -254,7 +267,9 @@
 				DEVELOPMENT_TEAM = R5D89M9ZWL;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSCameraUsageDescription = "Please provide access to camera to scan text";
+				INFOPLIST_FILE = MediCare/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Provide access to camera to scan text";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Provide access to location when in use to detect nearby pharmacies";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -287,7 +302,9 @@
 				DEVELOPMENT_TEAM = R5D89M9ZWL;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSCameraUsageDescription = "Please provide access to camera to scan text";
+				INFOPLIST_FILE = MediCare/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Provide access to camera to scan text";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Provide access to location when in use to detect nearby pharmacies";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

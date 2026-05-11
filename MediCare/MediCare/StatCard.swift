@@ -24,7 +24,7 @@ struct StatCard: View {
                 Text(value)
                     .font(.title2)
                     .fontWeight(.bold)
-                    .foregroundColor(color) // Tint the number to match
+                    .foregroundColor(color)
             }
             
             Text(title)
@@ -34,7 +34,6 @@ struct StatCard: View {
         }
         .padding()
         .frame(maxWidth: .infinity)
-        // Instead of white, use a 10% opacity of the accent color
         .background(color.opacity(0.1))
         .cornerRadius(15)
     }

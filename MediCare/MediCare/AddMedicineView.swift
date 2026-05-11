@@ -19,7 +19,6 @@ struct AddMedicineView: View {
     @State private var selectedIcon: String = "💊"
     @State private var isShowingScanner: Bool = false
     
-    // A simple array of options for our custom picker
     let iconOptions = ["💊", "💧", "💉", "🧴", "🌿", "🍎"]
     
     var isFormValid: Bool {
@@ -123,7 +122,7 @@ struct AddMedicineView: View {
                             dosage: dosage,
                             frequency: frequency,
                             remaining: remaining,
-                            total: 30, // You can make this dynamic later if you want
+                            total: 30, // can make this dynamic later 
                             refillDate: Date.now,
                             category: "General",
                             times: ["3AM", "6PM"], // Can also be made dynamic later

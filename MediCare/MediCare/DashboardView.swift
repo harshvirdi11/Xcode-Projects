@@ -2,8 +2,14 @@ import SwiftUI
 import SwiftData
 
 struct DashboardView: View {
+    @Environment(\.openURL) private var openURL
+    
     @Query(filter: #Predicate<Medicine> { $0.remaining <= 5 }, sort: \Medicine.name) var lowStockMedicines: [Medicine]
     @Query var allMedicines: [Medicine] // Used to show total active prescriptions
+    
+    @State private var showRefillOptions: Bool = false
+    @State private var selectedMedicine: Medicine? = nil
+    @State private var isShowingMap: Bool = false
     
     var body: some View {
         NavigationStack {
@@ -28,7 +34,6 @@ struct DashboardView: View {
                             .foregroundColor(.white)
                     }
                     .padding()
-                    // This creates a sleek, modern iOS gradient
                     .background(
                         LinearGradient(
                             gradient: Gradient(colors: [Color.blue, Color.cyan]),
@@ -82,9 +87,10 @@ struct DashboardView: View {
                                             .foregroundColor(.red)
                                     }
                                     Spacer()
-                                    Button(action: {
-                                        // Refill logic can go here later
-                                    }) {
+                                    Button {
+                                        selectedMedicine = medicine
+                                        showRefillOptions.toggle()
+                                    } label: {
                                         Text("Refill")
                                             .font(.caption)
                                             .fontWeight(.bold)
@@ -109,6 +115,30 @@ struct DashboardView: View {
             .navigationTitle("Dashboard")
             .navigationBarHidden(true)
             .background(Color(.systemGroupedBackground))
+            .confirmationDialog("How would you like to refill?", isPresented: $showRefillOptions) {
+                Button("In-store") {
+                    isShowingMap.toggle()
+                }
+                Button("Online") {
+                    triggerDeepLink(for: selectedMedicine?.name ?? "medicine")
+                }
+                Button("Cancel", role: .cancel) {}
+            }
+            .sheet(isPresented: $isShowingMap) {
+                PharmacyMapView()
+                    .presentationDetents([.medium, .large])
+            }
+        }
+    }
+    
+    func triggerDeepLink(for medicineName: String) {
+       
+        guard let safeSearchTerm = medicineName.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else { return }
+        
+        let urlString = "https://www.1mg.com/search/all?name=\(safeSearchTerm)"
+        
+        if let url = URL(string: urlString) {
+            openURL(url)
         }
     }
 }
@@ -117,3 +147,4 @@ struct DashboardView: View {
     DashboardView()
         .modelContainer(for: [Medicine.self, DoseLog.self], inMemory: true)
 }
+
